@@ -13,20 +13,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. Generate testscript.sh dynamically
+      # 2. Generate testscript.sh dynamically in the workspace
       - name: Create testscript.sh
         run: |
           cat << 'EOF' > testscript.sh
           #!/bin/sh
           echo "Running tests..."
-
           if [ -f server.js ]; then
             echo "server.js exists: Test passed"
           else
             echo "server.js missing: Test failed"
             exit 1
           fi
-
           echo "All tests passed!"
           exit 0
           EOF
@@ -43,7 +41,7 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      # 5. Build Docker image (testscript.sh will be included because it's in the repo directory)
+      # 5. Build Docker image including testscript.sh
       - name: Build Docker image
         run: |
           IMAGE_NAME=${{ secrets.DOCKER_HUB_USERNAME }}/myapp:latest
