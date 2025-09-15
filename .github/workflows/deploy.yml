@@ -24,14 +24,26 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      # 4. Build and push Docker image
-      - name: Build and push Docker image
-        run: | 
+      # 4. Build Docker image
+      - name: Build Docker image
+        run: |
           IMAGE_NAME=${{ secrets.DOCKER_HUB_USERNAME }}/myapp:latest
           docker build -t $IMAGE_NAME .
+
+      # 5. Run tests using Docker container
+      - name: Run test script
+        run: |
+          IMAGE_NAME=${{ secrets.DOCKER_HUB_USERNAME }}/myapp:latest
+          # Run the container temporarily to execute tests
+          docker run --rm $IMAGE_NAME sh -c "./testscript.sh"
+
+      # 6. Push Docker image if tests passed
+      - name: Push Docker image
+        run: |
+          IMAGE_NAME=${{ secrets.DOCKER_HUB_USERNAME }}/myapp:latest
           docker push $IMAGE_NAME
 
-      # 5. Deploy container on EC2
+      # 7. Deploy container on EC2
       - name: Deploy on EC2
         uses: appleboy/ssh-action@v1.0.0
         with:
