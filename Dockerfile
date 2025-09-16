@@ -17,5 +17,3 @@ EXPOSE 5000
 
 # Default command to run the app
 CMD ["node", "server.js"]
-
-
